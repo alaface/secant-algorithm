@@ -78,23 +78,34 @@ FindTriangulation := function(pts)
   if Rank(mat) le n then
    return simp,pts;
   else
-   Append(~simp,pts);
+   Append(~simp,Setseq(pts));
    return simp,{};
   end if;
 end function;
 
 
-// Test
+// TestDef
 // INPUT: a set of points pts, a positive integer k
-// OUTPUT: a partial triangulation of pts, the residual coplanar points
+// OUTPUT: a boolean, a partial triangulation of pts, the residual coplanar points
 // the best of k attempts
 
-Test := function(pts,k)
+TestDef := function(pts,k)
+ M := Parent(Random(pts));
+ N := Dual(M);
+ n := Dimension(M);
  lis := <>;
  for i in [1..k] do
   tri,pp := FindTriangulation(pts);
   Append(~lis,<tri,pp>);
+  if #pp le n then break; end if;
  end for;
  _,i := Min([#p[2] : p in lis]);
- return lis[i];
+ pp := lis[i][2];
+ if #pp eq 0 then return false,lis[i]; end if;
+ mat := Matrix([[1] cat Eltseq(p) : p in pp]);
+ if Rank(mat) eq #pp then 
+  return false,lis[i];
+ else
+  return true,lis[i];
+ end if;
 end function;
