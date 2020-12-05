@@ -10,7 +10,8 @@ IsSeparating := function(pts,v)
  N := Dual(M);
  v := N!v;
  n := Dimension(M);
- lis := Sort([<v*p,p> : p in pts]);
+ lis := Sort([[v*p] cat Eltseq(p) : p in pts]);
+ lis := [<u[1],M!u[2..#u]> : u in lis];
  mat := Matrix([[1] cat Eltseq(p[2]) : p in lis]);
  r := Rank(mat);
  if #{p[1] : p in lis} lt #pts or r le n 
